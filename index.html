@@ -186,7 +186,10 @@
                 </div>
             </div>
 
-            <button class="btn-primary" onclick="processPayment()">Find My Match (₹20)</button>
+            <label style="margin-top:20px;">Coupon Code (Optional)</label>
+            <input type="text" id="input-coupon" placeholder="Have a code?">
+
+            <button class="btn-primary" onclick="processPayment()">Find My Match</button>
             <center><button class="btn-link" onclick="nav('view-home')">Cancel</button></center>
         </div>
     </div>
@@ -263,10 +266,18 @@
         // --- PAYMENT & SIGNUP ---
         function processPayment() {
             const mobile = document.getElementById('input-mobile').value;
+            const coupon = document.getElementById('input-coupon').value.trim().toUpperCase();
+
             if(!mobile || !selectedGender) return alert("Please fill in all details.");
 
+            // Coupon Logic: If 'FREE', charge Rs 1 (test), else Rs 20
+            let amount = (coupon === "FREE") ? 100 : 2000; 
+
             var options = {
-                "key": RAZORPAY_KEY, "amount": 2000, "currency": "INR", "name": "Fest-Mate",
+                "key": RAZORPAY_KEY, 
+                "amount": amount, 
+                "currency": "INR", 
+                "name": "Fest-Mate",
                 "description": "Matchmaking Fee",
                 "handler": function (response) {
                     addToQueue(mobile, selectedGender);
