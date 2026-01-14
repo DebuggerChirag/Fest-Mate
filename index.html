@@ -8,256 +8,369 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <style>
+        /* --- DESIGN SYSTEM (LOVABLE STYLE) --- */
         :root {
             --bg-color: #FFF9F5;
             --primary-gradient: linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%); 
             --btn-gradient: linear-gradient(90deg, #F687B3 0%, #F6AD55 100%);
             --text-dark: #2D3748;
             --text-gray: #718096;
+            --accent-pink: #E65C7B;
             --input-border: #E2E8F0;
         }
 
         body {
-            margin: 0; font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-dark);
-            min-height: 100vh; display: flex; justify-content: center; align-items: center; overflow-x: hidden;
+            margin: 0; padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
         }
 
-        .hidden { display: none !important; }
-        .container { width: 100%; max-width: 440px; padding: 24px; text-align: center; animation: fadeIn 0.4s ease-out; }
-        
-        /* Styles from your design */
-        .icon-box { width: 80px; height: 80px; background: linear-gradient(135deg, #FF8FAB, #FFC2D1); border-radius: 24px; margin: 0 auto 24px; display: flex; justify-content: center; align-items: center; box-shadow: 0 15px 30px -10px rgba(255, 143, 171, 0.6); position: relative; }
-        .icon-box svg { width: 40px; height: 40px; stroke: white; fill: none; stroke-width: 2.5; }
-        h1 { font-family: 'Playfair Display', serif; font-size: 3rem; margin: 0 0 10px; background: linear-gradient(90deg, #E65C7B, #F98C6D); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; }
-        .subtitle { color: var(--text-gray); margin-bottom: 30px; }
-        
-        .form-card { background: white; padding: 30px; border-radius: 24px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05); text-align: left; }
-        .btn-primary { width: 100%; padding: 16px; border-radius: 18px; border: none; background: var(--btn-gradient); color: white; font-weight: 600; cursor: pointer; margin-top: 15px; }
-        .btn-secondary { background: white; border: 1px solid #E2E8F0; color: #4A5568; width: 100%; padding: 16px; border-radius: 18px; margin-top: 15px; cursor: pointer; font-weight: 600; }
-        
-        input { width: 100%; padding: 14px; border: 1px solid var(--input-border); border-radius: 12px; margin-top: 5px; box-sizing: border-box; }
-        
-        /* Gender Buttons */
-        .gender-options { display: flex; gap: 15px; margin-top: 5px; }
-        .gender-btn { flex: 1; padding: 15px; border: 1px solid var(--input-border); border-radius: 16px; cursor: pointer; text-align: center; }
-        .gender-btn.selected { border-color: #F687B3; background-color: #FFF5F7; color: #E65C7B; font-weight: 600; }
+        /* --- GLOW BACKGROUND --- */
+        .glow-bg {
+            position: absolute; width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(255,182,193,0.4) 0%, rgba(255,255,255,0) 70%);
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: -1; pointer-events: none;
+        }
 
-        /* Waitlist & ID Box */
-        .waitlist-icon { width: 60px; height: 60px; background: #FFF5F5; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; }
-        .id-box { background: #F7FAFC; padding: 15px; border-radius: 12px; margin: 20px 0; font-family: monospace; font-size: 1.5rem; font-weight: bold; letter-spacing: 2px; border: 1px dashed #CBD5E0; display: flex; justify-content: center; align-items: center; gap: 10px; }
-        .copy-btn { cursor: pointer; opacity: 0.6; width: 20px; }
-        .queue-status { color: #E65C7B; font-weight: bold; font-size: 1.1rem; margin: 10px 0; }
+        /* --- CONTAINER & UTILS --- */
+        .container { width: 100%; max-width: 440px; padding: 24px; text-align: center; animation: fadeIn 0.6s ease-out; }
+        .hidden { display: none !important; }
+        .btn-link { background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.9rem; margin-top: 20px; text-decoration: underline; }
+        
+        /* --- TYPOGRAPHY --- */
+        h1 {
+            font-family: 'Playfair Display', serif; font-size: 3rem; margin: 0 0 10px;
+            background: linear-gradient(90deg, #E65C7B, #F98C6D);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+        .subtitle { color: var(--text-gray); margin-bottom: 30px; line-height: 1.5; }
+
+        /* --- CARDS & FORMS --- */
+        .card {
+            background: white; padding: 32px; border-radius: 24px;
+            box-shadow: 0 20px 40px -10px rgba(255, 154, 158, 0.15);
+            text-align: left;
+        }
+
+        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-dark); }
+        input[type="tel"], input[type="text"] {
+            width: 100%; padding: 14px; border-radius: 12px;
+            border: 1px solid var(--input-border);
+            font-size: 1rem; box-sizing: border-box; outline: none; transition: 0.2s;
+            background: #FAFAFA;
+        }
+        input:focus { border-color: #F687B3; background: white; }
+
+        /* --- BUTTONS --- */
+        .btn-primary {
+            width: 100%; padding: 16px; border-radius: 18px; border: none;
+            background: var(--btn-gradient); color: white;
+            font-size: 1rem; font-weight: 600; cursor: pointer;
+            box-shadow: 0 10px 20px -5px rgba(246, 135, 179, 0.4);
+            transition: transform 0.2s; margin-top: 20px;
+        }
+        .btn-primary:hover { transform: translateY(-3px); }
+        
+        .btn-secondary {
+            width: 100%; padding: 16px; border-radius: 18px; border: 1px solid #E2E8F0;
+            background: white; color: var(--text-gray); font-weight: 600; cursor: pointer; margin-top: 15px;
+        }
+
+        /* --- GENDER SELECTION --- */
+        .gender-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 5px; }
+        .gender-card {
+            border: 1px solid var(--input-border); border-radius: 16px;
+            padding: 20px; text-align: center; cursor: pointer; transition: 0.2s;
+        }
+        .gender-card.selected { border-color: #F687B3; background: #FFF5F7; color: #E65C7B; font-weight: 600; }
+        .emoji { font-size: 1.5rem; display: block; margin-bottom: 5px; }
+
+        /* --- PRIORITY BOX --- */
+        .priority-box {
+            border: 2px dashed #FECDD3; background: #FFF5F5;
+            padding: 15px; border-radius: 16px; margin-top: 20px;
+            display: flex; gap: 12px; align-items: center;
+        }
+        .priority-content h4 { margin: 0; color: #9B2C2C; font-size: 0.9rem; }
+        .priority-content p { margin: 2px 0 0; color: #718096; font-size: 0.8rem; }
+        input[type="checkbox"] { accent-color: #E65C7B; width: 18px; height: 18px; }
+
+        /* --- WAITLIST UI SPECIFIC --- */
+        .waitlist-icon {
+            width: 70px; height: 70px; background: #FFF0F0; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
+        }
+        .queue-num { font-size: 1.2rem; color: #E65C7B; font-weight: 700; margin: 10px 0; }
+        
+        .id-display-box {
+            background: #F7FAFC; padding: 20px; border-radius: 16px; margin-top: 20px;
+            text-align: center; border: 1px solid #EDF2F7;
+        }
+        .match-id-text { font-family: monospace; font-size: 1.8rem; font-weight: bold; letter-spacing: 2px; color: #2D3748; }
+        .copy-icon { cursor: pointer; margin-left: 10px; vertical-align: middle; opacity: 0.5; }
+        .copy-icon:hover { opacity: 1; }
+
+        /* --- LANDING ICONS --- */
+        .main-icon-box {
+            width: 80px; height: 80px; background: linear-gradient(135deg, #FF8FAB, #FFC2D1);
+            border-radius: 24px; margin: 0 auto 24px; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 15px 30px -10px rgba(255, 143, 171, 0.6); position: relative;
+        }
+        .sparkle { position: absolute; top: -10px; right: -15px; color: #FF8FAB; animation: float 3s infinite; }
+        .tags { display: flex; justify-content: center; gap: 8px; margin-bottom: 30px; }
+        .tag { background: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; color: #718096; border: 1px solid #EDF2F7; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
     </style>
 </head>
 <body>
 
-    <div id="landing-view" class="container">
-        <div class="icon-box"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></div>
+    <div class="glow-bg"></div>
+
+    <div id="view-home" class="container">
+        <div class="main-icon-box">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            <svg class="sparkle" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L9.5 9.5L2 12L9.5 14.5L12 22L14.5 14.5L22 12L14.5 9.5L12 2Z"></path></svg>
+        </div>
         <h1>Fest-Mate</h1>
-        <p class="subtitle">Matchmaking, simplified. Just vibes.</p>
-        <button class="btn-primary" onclick="nav('form-view')">Get Started</button>
-        <button class="btn-secondary" onclick="nav('check-view')">I Have a Match ID</button>
+        <p class="subtitle">Matchmaking, simplified. No profiles, no<br>photos — just vibes.</p>
+        
+        <div class="tags">
+            <span class="tag">Queue-based</span>
+            <span class="tag">WhatsApp Connect</span>
+            <span class="tag">No Profiles</span>
+        </div>
+
+        <button class="btn-primary" onclick="nav('view-form')">Get Started</button>
+        <button class="btn-secondary" onclick="nav('view-status')">I Have a Match ID</button>
     </div>
 
-    <div id="form-view" class="container hidden">
-        <div class="form-card">
-            <h2 style="margin-top:0;">Find your match</h2>
+    <div id="view-form" class="container hidden">
+        <div class="card">
+            <h2 style="margin-top:0; font-family:'Playfair Display', serif;">Find your match</h2>
+            <p style="color:var(--text-gray); font-size:0.9rem; margin-bottom:20px;">Join the queue to find a connection</p>
             
             <label>Mobile Number</label>
-            <input type="tel" id="mobile" placeholder="9876543210">
-            
-            <label style="display:block; margin-top:15px;">Gender</label>
-            <div class="gender-options">
-                <div class="gender-btn" id="btn-male" onclick="selectGender('male')">👨 Male</div>
-                <div class="gender-btn" id="btn-female" onclick="selectGender('female')">👩 Female</div>
+            <input type="tel" id="input-mobile" placeholder="Enter your mobile number">
+            <p style="font-size:0.75rem; color:#A0AEC0; margin-top:5px;">Do not include country code</p>
+
+            <label style="margin-top:20px;">Gender</label>
+            <div class="gender-grid">
+                <div class="gender-card" id="opt-male" onclick="selectGender('male')">
+                    <span class="emoji">👨</span> Male
+                </div>
+                <div class="gender-card" id="opt-female" onclick="selectGender('female')">
+                    <span class="emoji">👩</span> Female
+                </div>
             </div>
 
-            <button class="btn-primary" onclick="payNow()">Find My Match (₹20)</button>
-            <p style="text-align:center; color:#A0AEC0; cursor:pointer; margin-top:15px;" onclick="nav('landing-view')">Cancel</p>
+            <div class="priority-box">
+                <input type="checkbox" id="input-priority">
+                <div class="priority-content">
+                    <h4>I have Priority Access</h4>
+                    <p>Admin approval required</p>
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="processPayment()">Find My Match (₹20)</button>
+            <center><button class="btn-link" onclick="nav('view-home')">Cancel</button></center>
         </div>
     </div>
 
-    <div id="waitlist-view" class="container hidden">
-        <h1 style="font-size: 2.5rem;">Fest-Mate</h1>
+    <div id="view-waitlist" class="container hidden">
+        <h1 style="font-size: 2.2rem;">Fest-Mate</h1>
         
         <div class="waitlist-icon">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#E65C7B" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#E65C7B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
         </div>
 
-        <h2 style="font-family: 'Playfair Display'; margin-bottom: 5px;">In the Waitlist</h2>
-        <p style="color: #718096;">Waiting for your perfect match...</p>
+        <h2 style="font-family:'Playfair Display'; margin:0;">In the Waitlist</h2>
+        <p style="color:var(--text-gray); font-size:0.95rem;">Waiting for your perfect match...</p>
 
-        <div class="queue-status" id="display-position">Your position: #Calculating</div>
-        <p style="font-size: 0.9rem; color: #718096;" id="display-wait-msg">Waiting for signups to match.</p>
+        <div id="dynamic-status" class="queue-num">Your position: #Calculating...</div>
+        <p id="dynamic-msg" style="font-size:0.85rem; color:var(--text-gray);">Waiting for opposite gender signups.</p>
 
-        <div class="form-card" style="margin-top: 25px; text-align: center;">
-            <p style="margin:0; color:#718096; font-size: 0.85rem;">Your Match ID</p>
-            <div class="id-box">
-                <span id="generated-id">...</span>
-                <svg class="copy-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" onclick="copyID()"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        <div class="id-display-box">
+            <p style="margin:0; font-size:0.8rem; color:#A0AEC0; text-transform:uppercase;">Your Match ID</p>
+            <div style="margin-top:5px;">
+                <span id="generated-id" class="match-id-text">...</span>
+                <svg class="copy-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" onclick="copyID()"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
             </div>
-            <p style="font-size: 0.8rem; color: #A0AEC0;">Save this ID to check your status later</p>
+            <p style="margin:8px 0 0 0; font-size:0.8rem; color:#E65C7B;">Save this ID to check status later</p>
         </div>
-        
-        <button class="btn-secondary" onclick="nav('landing-view')">Back to Home</button>
+
+        <button class="btn-secondary" onclick="nav('view-home')">Back to Home</button>
     </div>
 
-    <div id="check-view" class="container hidden">
-        <div class="form-card">
-            <h2>Check Status</h2>
-            <input type="text" id="check-id-input" placeholder="Enter Match ID" style="text-align:center; font-weight:bold; letter-spacing:1px;">
+    <div id="view-status" class="container hidden">
+        <div class="card">
+            <h2 style="margin-top:0; font-family:'Playfair Display';">Check Status</h2>
+            <p style="color:var(--text-gray); font-size:0.9rem; margin-bottom:20px;">Enter your Match ID to see your position</p>
+
+            <label>Match ID</label>
+            <input type="text" id="input-check-id" placeholder="e.g. 4C5617" style="text-align:center; letter-spacing:1px; font-weight:bold;">
+
             <button class="btn-primary" onclick="checkStatus()">Check Status</button>
-            
-            <div id="status-result" class="hidden" style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px;">
-                <p id="status-text" style="font-weight: bold; color: #2D3748;">Loading...</p>
-                <button id="whatsapp-btn" class="btn-primary hidden" style="background: #25D366;">
+
+            <div id="status-result" class="hidden" style="margin-top:25px; padding-top:20px; border-top:1px solid #eee;">
+                <p id="status-text" style="font-weight:600; font-size:1.1rem;">Loading...</p>
+                <button id="btn-whatsapp" class="btn-primary hidden" style="background: #25D366; box-shadow: 0 10px 20px -5px rgba(37, 211, 102, 0.4);">
                     Connect on WhatsApp 💬
                 </button>
             </div>
 
-            <p style="text-align:center; color:#A0AEC0; cursor:pointer; margin-top:15px;" onclick="nav('landing-view')">Back</p>
+            <center><button class="btn-link" onclick="nav('view-home')">Back to Sign Up</button></center>
         </div>
     </div>
 
     <script>
-        const RAZORPAY_KEY = "rzp_test_S3e2P3RW8rOeE0"; // Replace if needed
+        // --- CONFIG ---
+        const RAZORPAY_KEY = "rzp_test_S3e2P3RW8rOeE0"; // Replace with your key
         let selectedGender = null;
 
+        // --- NAVIGATION ---
         function nav(viewId) {
             document.querySelectorAll('.container').forEach(el => el.classList.add('hidden'));
             document.getElementById(viewId).classList.remove('hidden');
         }
 
-        function selectGender(g) {
-            selectedGender = g;
-            document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('selected'));
-            document.getElementById('btn-'+g).classList.add('selected');
-        }
-
-        function payNow() {
-            const mobile = document.getElementById('mobile').value;
-            if(!mobile || !selectedGender) return alert("Please fill all details");
-
-            // Dummy Payment for Demo
-            var options = {
-                "key": RAZORPAY_KEY, "amount": 2000, "currency": "INR", "name": "Fest-Mate",
-                "handler": function (response){
-                    processSignup(mobile, selectedGender);
-                },
-                "prefill": { "contact": mobile }
-            };
-            new Razorpay(options).open();
-        }
-
-        // --- THE QUEUE LOGIC ---
-        function processSignup(mobile, gender) {
-            // 1. Generate ID
-            const matchID = Math.random().toString(16).slice(2, 8).toUpperCase(); // e.g., 4C5617
-            
-            // 2. Get Current Counters
-            let maleCount = parseInt(localStorage.getItem('count_male') || 0);
-            let femaleCount = parseInt(localStorage.getItem('count_female') || 0);
-
-            // 3. Assign Queue Position
-            // If I am Male #5, my queue position is 5. I need 5 females to exist to be matched.
-            let myQueueNumber = 0;
-            if(gender === 'male') {
-                maleCount++;
-                localStorage.setItem('count_male', maleCount);
-                myQueueNumber = maleCount; 
-            } else {
-                femaleCount++;
-                localStorage.setItem('count_female', femaleCount);
-                myQueueNumber = femaleCount;
-            }
-
-            // 4. Save User Data
-            const userData = {
-                id: matchID, mobile: mobile, gender: gender,
-                queueNum: myQueueNumber, // "I am the 5th male"
-                date: new Date().toISOString()
-            };
-            localStorage.setItem('user_' + matchID, JSON.stringify(userData));
-
-            // 5. Show Waitlist Screen
-            showWaitlistScreen(userData, maleCount, femaleCount);
-        }
-
-        function showWaitlistScreen(user, totalMales, totalFemales) {
-            nav('waitlist-view');
-            document.getElementById('generated-id').innerText = user.id;
-
-            // Calculate Position
-            // If I am Male #5, and there are 3 Females total.
-            // My position in line = 5 - 3 = 2. (I am waiting for 2 more females).
-            
-            let oppositeCount = (user.gender === 'male') ? totalFemales : totalMales;
-            let position = user.queueNum - oppositeCount;
-
-            if (position <= 0) {
-                // MATCHED!
-                document.getElementById('display-position').innerText = "Status: MATCHED! 🎉";
-                document.getElementById('display-position').style.color = "#25D366";
-                document.getElementById('display-wait-msg').innerText = "Go to 'Check Status' to get their number!";
-            } else {
-                // WAITING
-                document.getElementById('display-position').innerText = "Your position: #" + position;
-                let needed = (user.gender === 'male') ? "female" : "male";
-                document.getElementById('display-wait-msg').innerText = `Waiting for ${position} ${needed} signups to match.`;
-            }
-        }
-
-        function checkStatus() {
-            const id = document.getElementById('check-id-input').value.trim().toUpperCase();
-            const user = JSON.parse(localStorage.getItem('user_' + id));
-            const resultBox = document.getElementById('status-result');
-            const statusText = document.getElementById('status-text');
-            const waBtn = document.getElementById('whatsapp-btn');
-
-            resultBox.classList.remove('hidden');
-            
-            if(!user) {
-                statusText.innerText = "❌ ID Not Found";
-                waBtn.classList.add('hidden');
-                return;
-            }
-
-            // Check Live Queue Status
-            let totalMales = parseInt(localStorage.getItem('count_male') || 0);
-            let totalFemales = parseInt(localStorage.getItem('count_female') || 0);
-            let oppositeCount = (user.gender === 'male') ? totalFemales : totalMales;
-            
-            // Queue Calculation
-            let position = user.queueNum - oppositeCount;
-
-            if(position <= 0) {
-                // MATCHED logic
-                statusText.innerText = "✅ You have a Match!";
-                statusText.style.color = "#25D366";
-                waBtn.classList.remove('hidden');
-                
-                // Simulate getting the matched number (In real app, fetch from DB)
-                // Here we just use a placeholder since we don't have the other person's data stored easily
-                let dummyNumber = "919999999999"; 
-                waBtn.onclick = () => window.open(`https://wa.me/${dummyNumber}?text=Hi! We matched on Fest-Mate.`, '_blank');
-            } else {
-                // STILL WAITING
-                let needed = (user.gender === 'male') ? "female" : "male";
-                statusText.innerText = `⏳ Still Waiting... Position #${position}`;
-                statusText.style.color = "#E65C7B";
-                waBtn.classList.add('hidden');
-            }
+        function selectGender(gender) {
+            selectedGender = gender;
+            document.querySelectorAll('.gender-card').forEach(el => el.classList.remove('selected'));
+            document.getElementById('opt-' + gender).classList.add('selected');
         }
 
         function copyID() {
             const id = document.getElementById('generated-id').innerText;
             navigator.clipboard.writeText(id);
-            alert("ID Copied: " + id);
+            alert("ID Copied!");
+        }
+
+        // --- PAYMENT & SIGNUP ---
+        function processPayment() {
+            const mobile = document.getElementById('input-mobile').value;
+            if(!mobile || !selectedGender) return alert("Please fill in all details.");
+
+            var options = {
+                "key": RAZORPAY_KEY, "amount": 2000, "currency": "INR", "name": "Fest-Mate",
+                "description": "Matchmaking Fee",
+                "handler": function (response) {
+                    addToQueue(mobile, selectedGender);
+                },
+                "prefill": { "contact": mobile },
+                "theme": { "color": "#E65C7B" }
+            };
+            var rzp = new Razorpay(options);
+            rzp.open();
+        }
+
+        // --- QUEUE LOGIC (LOCALSTORAGE SIMULATION) ---
+        function addToQueue(mobile, gender) {
+            // 1. Generate ID
+            const matchID = Math.random().toString(16).slice(2, 8).toUpperCase(); 
+
+            // 2. Increment Gender Counters
+            let maleCount = parseInt(localStorage.getItem('cnt_male') || 0);
+            let femaleCount = parseInt(localStorage.getItem('cnt_female') || 0);
+
+            let myQueueNum = 0;
+            if(gender === 'male') {
+                maleCount++;
+                localStorage.setItem('cnt_male', maleCount);
+                myQueueNum = maleCount;
+            } else {
+                femaleCount++;
+                localStorage.setItem('cnt_female', femaleCount);
+                myQueueNum = femaleCount;
+            }
+
+            // 3. Save User
+            const user = {
+                id: matchID, mobile: mobile, gender: gender,
+                queueNum: myQueueNum,
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem('user_' + matchID, JSON.stringify(user));
+
+            // 4. Show Waitlist
+            nav('view-waitlist');
+            document.getElementById('generated-id').innerText = matchID;
+            updateWaitlistUI(user, maleCount, femaleCount);
+        }
+
+        function updateWaitlistUI(user, totalMales, totalFemales) {
+            // Calculate Position
+            // If I am Male #5, I need 5 Females.
+            let oppositeCount = (user.gender === 'male') ? totalFemales : totalMales;
+            let position = user.queueNum - oppositeCount;
+            let neededGender = (user.gender === 'male') ? "female" : "male";
+
+            const statusEl = document.getElementById('dynamic-status');
+            const msgEl = document.getElementById('dynamic-msg');
+
+            if (position <= 0) {
+                // MATCHED
+                statusEl.innerText = "Status: MATCHED! 🎉";
+                statusEl.style.color = "#25D366";
+                msgEl.innerText = "Your match is ready. Go to 'Check Status'.";
+            } else {
+                // WAITING
+                statusEl.innerText = `Your position: #${position}`;
+                statusEl.style.color = "#E65C7B";
+                msgEl.innerText = `Waiting for ${position} ${neededGender} signups to match.`;
+            }
+        }
+
+        // --- CHECK STATUS LOGIC ---
+        function checkStatus() {
+            const id = document.getElementById('input-check-id').value.trim().toUpperCase();
+            const resultBox = document.getElementById('status-result');
+            const statusText = document.getElementById('status-text');
+            const waBtn = document.getElementById('btn-whatsapp');
+            
+            resultBox.classList.remove('hidden');
+
+            const user = JSON.parse(localStorage.getItem('user_' + id));
+
+            if (!user) {
+                statusText.innerText = "❌ ID Not Found";
+                statusText.style.color = "red";
+                waBtn.classList.add('hidden');
+                return;
+            }
+
+            // Recalculate based on current totals
+            let totalMales = parseInt(localStorage.getItem('cnt_male') || 0);
+            let totalFemales = parseInt(localStorage.getItem('cnt_female') || 0);
+            let oppositeCount = (user.gender === 'male') ? totalFemales : totalMales;
+            let position = user.queueNum - oppositeCount;
+
+            if (position <= 0) {
+                statusText.innerText = "✅ You have a Match!";
+                statusText.style.color = "#25D366";
+                waBtn.classList.remove('hidden');
+                // Fake number for demo
+                waBtn.onclick = () => window.open("https://wa.me/919999999999?text=Hi! We matched on Fest-Mate.", "_blank");
+            } else {
+                let neededGender = (user.gender === 'male') ? "female" : "male";
+                statusText.innerText = `⏳ Waiting... Position #${position}`;
+                statusText.style.color = "#E65C7B";
+                waBtn.classList.add('hidden');
+            }
         }
     </script>
 </body>
