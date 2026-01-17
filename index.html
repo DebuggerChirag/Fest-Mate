@@ -15,58 +15,50 @@
         /* --- DESIGN SYSTEM --- */
         :root {
             --bg-color: #FFF9F5;
-            --primary-gradient: linear-gradient(135deg, #a5cf3f 0%, #7dbb00 100%); /* PayU Green Theme */
+            --primary-gradient: linear-gradient(135deg, #a5cf3f 0%, #7dbb00 100%); 
             --btn-gradient: linear-gradient(90deg, #9bc53d 0%, #7dbb00 100%);
             --text-dark: #2D3748;
             --text-gray: #718096;
-            --accent-pink: #E65C7B;
             --input-border: #E2E8F0;
+            --error-red: #E53E3E;
         }
 
         body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-dark); min-height: 100vh; display: flex; justify-content: center; align-items: center; overflow-x: hidden; }
-
-        /* --- GLOW BACKGROUND --- */
         .glow-bg { position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(165, 207, 63, 0.2) 0%, rgba(255,255,255,0) 70%); top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: -1; pointer-events: none; }
-
-        /* --- CONTAINER & UTILS --- */
         .container { width: 100%; max-width: 440px; padding: 24px; text-align: center; animation: fadeIn 0.6s ease-out; }
         .hidden { display: none !important; }
         .btn-link { background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.9rem; margin-top: 20px; text-decoration: underline; }
-        
         h1 { font-family: 'Playfair Display', serif; font-size: 3rem; margin: 0 0 10px; background: linear-gradient(90deg, #E65C7B, #F98C6D); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; }
         .subtitle { color: var(--text-gray); margin-bottom: 30px; line-height: 1.5; }
-
         .card { background: white; padding: 32px; border-radius: 24px; box-shadow: 0 20px 40px -10px rgba(165, 207, 63, 0.15); text-align: left; }
-
         label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-dark); }
         input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--input-border); font-size: 1rem; box-sizing: border-box; outline: none; transition: 0.2s; background: #FAFAFA; }
         input:focus { border-color: #9bc53d; background: white; }
-
         .btn-primary { width: 100%; padding: 16px; border-radius: 18px; border: none; background: var(--btn-gradient); color: white; font-size: 1rem; font-weight: 600; cursor: pointer; box-shadow: 0 10px 20px -5px rgba(165, 207, 63, 0.4); transition: transform 0.2s; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-primary:hover { transform: translateY(-3px); }
         .btn-secondary { width: 100%; padding: 16px; border-radius: 18px; border: 1px solid #E2E8F0; background: white; color: var(--text-gray); font-weight: 600; cursor: pointer; margin-top: 15px; }
-
-        /* --- GENDER SELECTION --- */
+        
+        /* Gender & Priority */
         .gender-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 5px; }
         .gender-card { border: 1px solid var(--input-border); border-radius: 16px; padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; }
         .gender-card.selected { border-color: #9bc53d; background: #f4f9e6; color: #557d0e; font-weight: 600; }
         .emoji { font-size: 1.5rem; display: block; margin-bottom: 5px; }
-
-        /* --- PRIORITY BOX --- */
         .priority-box { border: 2px dashed #cadd95; background: #f9fbf2; padding: 15px; border-radius: 16px; margin-top: 20px; display: flex; gap: 12px; align-items: center; }
         .priority-content h4 { margin: 0; color: #557d0e; font-size: 0.9rem; }
         .priority-content p { margin: 2px 0 0; color: #718096; font-size: 0.8rem; }
         input[type="checkbox"] { accent-color: #9bc53d; width: 18px; height: 18px; }
 
-        /* --- WAITLIST UI --- */
+        /* Waitlist & Icons */
         .waitlist-icon { width: 70px; height: 70px; background: #FFF0F0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
         .queue-num { font-size: 1.2rem; color: #E65C7B; font-weight: 700; margin: 10px 0; }
         .id-display-box { background: #F7FAFC; padding: 20px; border-radius: 16px; margin-top: 20px; text-align: center; border: 1px solid #EDF2F7; }
         .match-id-text { font-family: monospace; font-size: 1.8rem; font-weight: bold; letter-spacing: 2px; color: #2D3748; }
-
         .main-icon-box { width: 80px; height: 80px; background: linear-gradient(135deg, #FF8FAB, #FFC2D1); border-radius: 24px; margin: 0 auto 24px; display: flex; justify-content: center; align-items: center; box-shadow: 0 15px 30px -10px rgba(255, 143, 171, 0.6); position: relative; }
         .tags { display: flex; justify-content: center; gap: 8px; margin-bottom: 30px; }
         .tag { background: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; color: #718096; border: 1px solid #EDF2F7; }
+
+        /* Failure Icon */
+        .fail-icon { background: #FFF5F5; color: #C53030; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -93,7 +85,6 @@
     <div id="view-form" class="container hidden">
         <div class="card">
             <h2 style="margin-top:0; font-family:'Playfair Display';">Find your match</h2>
-            
             <label>Mobile Number</label>
             <input type="tel" id="input-mobile" placeholder="Enter your mobile number">
 
@@ -114,11 +105,17 @@
             <label style="margin-top:20px;">Coupon Code (Optional)</label>
             <input type="text" id="input-coupon" placeholder="Have a code?">
 
-            <button class="btn-primary" onclick="launchPayU()">
-                Pay with PayU (₹20)
-            </button>
+            <button class="btn-primary" onclick="launchPayU()">Pay with PayU (₹20)</button>
             <center><button class="btn-link" onclick="nav('view-home')">Cancel</button></center>
         </div>
+    </div>
+
+    <div id="view-loading" class="container hidden">
+        <div class="main-icon-box" style="background: linear-gradient(135deg, #a5cf3f, #7dbb00); box-shadow:none;">
+            <svg class="spin" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+        </div>
+        <h2>Verifying Payment...</h2>
+        <p class="subtitle">Please wait while we secure your spot.</p>
     </div>
 
     <div id="view-waitlist" class="container hidden">
@@ -133,6 +130,16 @@
             <p style="margin:8px 0 0 0; font-size:0.8rem; color:#E65C7B;">Save this ID!</p>
         </div>
         <button class="btn-secondary" onclick="nav('view-home')">Back to Home</button>
+    </div>
+
+    <div id="view-failure" class="container hidden">
+        <div class="waitlist-icon fail-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C53030" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </div>
+        <h2 style="color: #C53030;">Transaction Failed</h2>
+        <p class="subtitle">We couldn't process your payment. Please try again.</p>
+        <button class="btn-primary" style="background: #C53030;" onclick="nav('view-form')">Try Again</button>
+        <center><button class="btn-link" onclick="nav('view-home')">Back to Home</button></center>
     </div>
 
     <div id="view-status" class="container hidden">
@@ -156,28 +163,39 @@
         <input type="hidden" name="email" value="test@example.com" />
         <input type="hidden" name="firstname" value="Moodi User" />
         <input type="hidden" name="phone" value="9999999999" />
-        <input type="hidden" name="surl" id="surl" /> <input type="hidden" name="furl" id="furl" /> <input type="hidden" name="hash" id="hash" />
+        <input type="hidden" name="surl" id="surl" />
+        <input type="hidden" name="furl" id="furl" />
+        <input type="hidden" name="hash" id="hash" />
     </form>
 
     <script>
-        // --- PAYU TEST CONFIG (UPDATED) ---
+        // --- PAYU CONFIG ---
         const PAYU_KEY = "gtKFFx";
-        // The error screen gave us this specific NEW salt:
+        // UPDATED SALT FROM ERROR SCREEN
         const PAYU_SALT = "4R38IvwiV57FwVpsgOvTXBdLE4tHUXFW"; 
 
         let selectedGender = null;
 
-        // Check if we just came back from PayU (Success)
+        // --- HANDLE SUCCESS / FAILURE ON RELOAD ---
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
-            if(urlParams.get('status') === 'success') {
+            const status = urlParams.get('status');
+
+            if (status === 'success') {
+                nav('view-loading'); // Show loading briefly
                 const pendingData = JSON.parse(localStorage.getItem('pending_signup'));
-                if(pendingData) {
-                    addToQueue(pendingData.mobile, pendingData.gender);
-                    localStorage.removeItem('pending_signup'); 
-                } else {
-                   nav('view-status'); 
-                }
+                
+                setTimeout(() => {
+                    if(pendingData) {
+                        addToQueue(pendingData.mobile, pendingData.gender);
+                        localStorage.removeItem('pending_signup'); 
+                    } else {
+                        nav('view-status'); 
+                    }
+                }, 1500); // Fake delay for UX
+            } 
+            else if (status === 'failed') {
+                nav('view-failure'); // Show Red Failure Screen
             }
         };
 
@@ -192,35 +210,25 @@
             document.getElementById('opt-' + gender).classList.add('selected');
         }
 
-        // --- PAYU LAUNCHER ---
         function launchPayU() {
             const mobile = document.getElementById('input-mobile').value;
             const coupon = document.getElementById('input-coupon').value.trim().toUpperCase();
 
             if(!mobile || !selectedGender) return alert("Please fill details.");
 
-            // 1. Save data temporarily
             localStorage.setItem('pending_signup', JSON.stringify({mobile, gender: selectedGender}));
 
-            // 2. Prepare Transaction Data
             const txnid = "TXN" + Math.floor(Math.random() * 10000000);
-            // Amount MUST be a float string (e.g. "20.00")
             const amount = (coupon === "FREE") ? "1.00" : "20.00"; 
-            const productinfo = "MoodiMate Match";
-            const firstname = "Moodi User";
-            const email = "test@example.com";
             
-            // 3. Set URLs
             const currentUrl = window.location.href.split('?')[0];
             const surl = currentUrl + "?status=success";
             const furl = currentUrl + "?status=failed";
 
-            // 4. GENERATE HASH (Updated Salt)
-            // Formula: sha512(key|txnid|amount|productinfo|firstname|email|||||||||||salt)
-            const hashString = `${PAYU_KEY}|${txnid}|${amount}|${productinfo}|${firstname}|${email}|||||||||||${PAYU_SALT}`;
+            // Hash Generation
+            const hashString = `${PAYU_KEY}|${txnid}|${amount}|MoodiMate Match|Moodi User|test@example.com|||||||||||${PAYU_SALT}`;
             const hash = sha512(hashString);
 
-            // 5. Fill Form & Submit
             document.getElementById('txnid').value = txnid;
             document.getElementById('payu-amount').value = amount;
             document.getElementById('hash').value = hash;
@@ -230,7 +238,6 @@
             document.getElementById('payu-form').submit();
         }
 
-        // --- QUEUE LOGIC ---
         function addToQueue(mobile, gender) {
             const matchID = Math.random().toString(16).slice(2, 8).toUpperCase(); 
             let maleCount = parseInt(localStorage.getItem('cnt_male') || 0);
