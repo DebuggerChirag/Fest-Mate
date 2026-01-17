@@ -160,9 +160,10 @@
     </form>
 
     <script>
-        // --- PAYU TEST CONFIG ---
+        // --- PAYU TEST CONFIG (UPDATED) ---
         const PAYU_KEY = "gtKFFx";
-        const PAYU_SALT = "eCwWELxi"; 
+        // The error screen gave us this specific NEW salt:
+        const PAYU_SALT = "4R38IvwiV57FwVpsgOvTXBdLE4tHUXFW"; 
 
         let selectedGender = null;
 
@@ -170,13 +171,12 @@
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             if(urlParams.get('status') === 'success') {
-                // Recover data from storage (since PayU redirect refreshes page)
                 const pendingData = JSON.parse(localStorage.getItem('pending_signup'));
                 if(pendingData) {
                     addToQueue(pendingData.mobile, pendingData.gender);
-                    localStorage.removeItem('pending_signup'); // Clear temp data
+                    localStorage.removeItem('pending_signup'); 
                 } else {
-                   nav('view-status'); // Fallback
+                   nav('view-status'); 
                 }
             }
         };
@@ -199,22 +199,23 @@
 
             if(!mobile || !selectedGender) return alert("Please fill details.");
 
-            // 1. Save data temporarily (because PayU will refresh the page)
+            // 1. Save data temporarily
             localStorage.setItem('pending_signup', JSON.stringify({mobile, gender: selectedGender}));
 
             // 2. Prepare Transaction Data
             const txnid = "TXN" + Math.floor(Math.random() * 10000000);
-            const amount = (coupon === "FREE") ? "1.00" : "20.00"; // Test amount must be float string
+            // Amount MUST be a float string (e.g. "20.00")
+            const amount = (coupon === "FREE") ? "1.00" : "20.00"; 
             const productinfo = "MoodiMate Match";
             const firstname = "Moodi User";
             const email = "test@example.com";
             
-            // 3. Set URLs (Redirect back to this page with ?status=success)
+            // 3. Set URLs
             const currentUrl = window.location.href.split('?')[0];
             const surl = currentUrl + "?status=success";
             const furl = currentUrl + "?status=failed";
 
-            // 4. GENERATE HASH (Client Side - ONLY FOR TEST MODE)
+            // 4. GENERATE HASH (Updated Salt)
             // Formula: sha512(key|txnid|amount|productinfo|firstname|email|||||||||||salt)
             const hashString = `${PAYU_KEY}|${txnid}|${amount}|${productinfo}|${firstname}|${email}|||||||||||${PAYU_SALT}`;
             const hash = sha512(hashString);
