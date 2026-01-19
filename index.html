@@ -4,52 +4,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fest-Mate</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-
     <style>
-        /* [KEEP YOUR PREVIOUS CSS STYLES HERE] */
-        :root { --bg-color: #FFF9F5; --text-dark: #2D3748; --input-border: #E2E8F0; }
-        body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-dark); min-height: 100vh; display: flex; justify-content: center; align-items: center; }
-        .container { width: 100%; max-width: 440px; padding: 24px; text-align: center; }
-        .hidden { display: none !important; }
-        .card { background: white; padding: 32px; border-radius: 24px; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1); text-align: left; }
-        .btn-primary { width: 100%; padding: 16px; border-radius: 18px; border: none; background: linear-gradient(90deg, #F687B3, #F6AD55); color: white; font-weight: 600; cursor: pointer; margin-top: 20px; }
-        .btn-secondary { width: 100%; padding: 16px; border-radius: 18px; border: 1px solid #E2E8F0; background: white; color: #718096; font-weight: 600; cursor: pointer; margin-top: 15px; }
-        input, select { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--input-border); margin-bottom: 15px; box-sizing: border-box; }
-        .qr-placeholder { background: #f0f0f0; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
+        /* --- DESIGN SYSTEM --- */
+        :root {
+            --bg-color: #FFF9F5;
+            --primary-gradient: linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%); 
+            --btn-gradient: linear-gradient(90deg, #F687B3 0%, #F6AD55 100%);
+            --text-dark: #2D3748;
+            --text-gray: #718096;
+            --input-border: #E2E8F0;
+        }
+
+        body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-dark); min-height: 100vh; display: flex; justify-content: center; align-items: center; overflow-x: hidden; }
         
-        /* Icons */
-        .main-icon-box { width: 80px; height: 80px; background: linear-gradient(135deg, #FF8FAB, #FFC2D1); border-radius: 24px; margin: 0 auto 24px; display: flex; justify-content: center; align-items: center; box-shadow: 0 15px 30px -10px rgba(255, 143, 171, 0.6); }
+        /* Glow Background */
+        .glow-bg { position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(255,182,193,0.4) 0%, rgba(255,255,255,0) 70%); top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: -1; pointer-events: none; }
+        
+        /* Container */
+        .container { width: 100%; max-width: 440px; padding: 24px; text-align: center; animation: fadeIn 0.6s ease-out; }
+        .hidden { display: none !important; }
+        
+        /* Typography */
+        h1 { font-family: 'Playfair Display', serif; font-size: 3rem; margin: 0 0 10px; background: linear-gradient(90deg, #E65C7B, #F98C6D); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; }
+        .subtitle { color: var(--text-gray); margin-bottom: 30px; line-height: 1.5; }
+        
+        /* Cards & Forms */
+        .card { background: white; padding: 32px; border-radius: 24px; box-shadow: 0 20px 40px -10px rgba(255, 154, 158, 0.15); text-align: left; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-dark); }
+        input, select { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--input-border); font-size: 1rem; box-sizing: border-box; outline: none; transition: 0.2s; background: #FAFAFA; margin-bottom: 15px; }
+        input:focus { border-color: #F687B3; background: white; }
+        
+        /* Buttons */
+        .btn-primary { width: 100%; padding: 16px; border-radius: 18px; border: none; background: var(--btn-gradient); color: white; font-size: 1rem; font-weight: 600; cursor: pointer; box-shadow: 0 10px 20px -5px rgba(246, 135, 179, 0.4); transition: transform 0.2s; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primary:hover { transform: translateY(-3px); }
+        .btn-secondary { width: 100%; padding: 16px; border-radius: 18px; border: 1px solid #E2E8F0; background: white; color: var(--text-gray); font-weight: 600; cursor: pointer; margin-top: 15px; }
+        .btn-link { background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.9rem; margin-top: 20px; text-decoration: underline; }
+
+        /* QR Section */
+        .qr-placeholder { background: #f0f0f0; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
+
+        /* Waitlist & Icons */
         .waitlist-icon { width: 70px; height: 70px; background: #FFF0F0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+        .id-display-box { background: #F7FAFC; padding: 20px; border-radius: 16px; margin-top: 20px; text-align: center; border: 1px solid #EDF2F7; }
+        .match-id-text { font-family: monospace; font-size: 1.8rem; font-weight: bold; letter-spacing: 2px; color: #2D3748; }
+        .main-icon-box { width: 80px; height: 80px; background: linear-gradient(135deg, #FF8FAB, #FFC2D1); border-radius: 24px; margin: 0 auto 24px; display: flex; justify-content: center; align-items: center; box-shadow: 0 15px 30px -10px rgba(255, 143, 171, 0.6); position: relative; }
+        .tags { display: flex; justify-content: center; gap: 8px; margin-bottom: 30px; }
+        .tag { background: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; color: #718096; border: 1px solid #EDF2F7; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
+
+    <div class="glow-bg"></div>
 
     <div id="view-home" class="container">
         <div class="main-icon-box">
              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
         </div>
-        <h1 style="font-family:'Playfair Display'; font-size:3rem; margin-bottom:10px; color:#E65C7B;">Fest-Mate</h1>
-        <p style="color:#718096; line-height:1.5;">Matchmaking, simplified. No profiles, no<br>photos — just vibes.</p>
+        <h1>Fest-Mate</h1>
+        <p class="subtitle">Matchmaking, simplified. No profiles, no<br>photos — just vibes.</p>
+        <div class="tags">
+            <span class="tag">Queue-based</span>
+            <span class="tag">WhatsApp Connect</span>
+            <span class="tag">No Profiles</span>
+        </div>
         <button class="btn-primary" onclick="nav('view-form')">Get Started</button>
+        <button class="btn-secondary" onclick="nav('view-status')">I Have a Match ID</button>
     </div>
 
     <div id="view-form" class="container hidden">
         <div class="card">
-            <h2 style="margin-top:0;">Find your match</h2>
-            <input type="tel" id="input-mobile" placeholder="Mobile Number">
-            <input type="email" id="input-email" placeholder="Email Address">
+            <h2 style="margin-top:0; font-family:'Playfair Display';">Find your match</h2>
+            
+            <label>Mobile Number</label>
+            <input type="tel" id="input-mobile" placeholder="Enter your mobile number">
+
+            <label>Email Address</label>
+            <input type="email" id="input-email" placeholder="To receive your Match ID">
+
+            <label>Gender</label>
             <select id="input-gender">
                 <option value="">Select Gender</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
             </select>
+
+            <label>Coupon Code (Optional)</label>
+            <input type="text" id="input-coupon" placeholder="Have a code?">
+
             <button class="btn-primary" onclick="showQR()">Pay ₹20 & Join</button>
-            <center><button class="btn-secondary" onclick="nav('view-home')">Cancel</button></center>
+            <center><button class="btn-link" onclick="nav('view-home')">Cancel</button></center>
         </div>
     </div>
 
@@ -57,8 +107,8 @@
         <div class="card">
             <h2 style="text-align:center; margin-top:0;">Scan to Pay</h2>
             <div class="qr-placeholder">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=YOUR_UPI@okaxis&pn=FestMate&am=20" width="150">
-                <p style="margin-bottom:0; color:#666;">Scan with GPay / PhonePe</p>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=9586637637@fam&pn=FestMate&am=20" width="150">
+                <p style="margin-bottom:0; color:#666;">Scan with any UPI App</p>
             </div>
             
             <p style="font-size:0.9rem; color:#666;">After paying, enter the <b>UTR / Transaction ID</b> below (found in your payment app).</p>
@@ -76,32 +126,48 @@
             <div class="waitlist-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#E65C7B" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
             <p style="color:#718096; margin-bottom:5px;">Your Match ID</p>
             <h2 id="match-id-display" style="font-family:monospace; font-size:2rem; margin:0; color:#2D3748;">...</h2>
-            <p style="color:#E65C7B; font-size:0.9rem; margin-top:10px;">We have emailed this ID to you.</p>
+            <p style="color:#E65C7B; font-size:0.9rem; margin-top:10px;">Please take a screenshot of this ID.</p>
             <button class="btn-secondary" onclick="nav('view-home')">Back to Home</button>
         </div>
     </div>
 
-    <div id="view-loading" class="container hidden">
-        <h2>Verifying...</h2>
-        <p>Checking bank records. This may take 30s.</p>
+    <div id="view-status" class="container hidden">
+        <div class="card">
+            <h2>Check Status</h2>
+            <p style="color:#718096; font-size:0.9rem; margin-bottom:20px;">Enter your Match ID to see your position</p>
+
+            <label>Match ID</label>
+            <input type="text" id="input-check-id" placeholder="e.g. 4C5617" style="text-align:center; letter-spacing:1px; font-weight:bold;">
+
+            <button class="btn-primary" onclick="checkStatus()">Check Status</button>
+
+            <div id="status-result" class="hidden" style="margin-top:25px; padding-top:20px; border-top:1px solid #eee;">
+                <p id="status-text" style="font-weight:600; font-size:1.1rem;">Loading...</p>
+                <button id="btn-whatsapp" class="btn-primary hidden" style="background: #25D366;">
+                    Connect on WhatsApp 💬
+                </button>
+            </div>
+
+            <center><button class="btn-link" onclick="nav('view-home')">Back to Home</button></center>
+        </div>
     </div>
 
     <script>
-        // --- CONFIG ---
+        // --- CONFIGURATION ---
+        // 1. PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwMMgs3DBWEy4O5QBHLWzsgFMJ2xSbMkSuVUR8Cp9d9DSlaX9Q2zB4IMl0FUS4ijt79/exec"; 
-        const EMAILJS_SERVICE = "YOUR_SERVICE_ID";
-        const EMAILJS_TEMPLATE = "YOUR_TEMPLATE_ID";
-        const EMAILJS_KEY = "YOUR_PUBLIC_KEY";
-
-        (function() { emailjs.init(EMAILJS_KEY); })();
-
+        
         function nav(id) {
             document.querySelectorAll('.container').forEach(el => el.classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
         }
 
         function showQR() {
-            if(!document.getElementById('input-mobile').value) return alert("Enter details");
+            const mobile = document.getElementById('input-mobile').value;
+            const email = document.getElementById('input-email').value;
+            const gender = document.getElementById('input-gender').value;
+
+            if(!mobile || !email || !gender) return alert("Please fill all details");
             nav('view-qr');
         }
 
@@ -111,11 +177,8 @@
             
             if(userUTR.length < 4) return alert("Enter valid UTR");
 
-            msg.innerText = "Checking bank records...";
+            msg.innerText = "Checking bank records... (Takes approx 30s)";
             msg.style.color = "blue";
-            
-            // Show full loading screen if preferred, or just text
-            // nav('view-loading'); 
 
             try {
                 // 1. Fetch data from your Google Sheet
@@ -123,19 +186,20 @@
                 const data = await response.json();
 
                 // 2. Check if UTR exists
-                const paymentFound = data.find(row => row.utr.includes(userUTR));
+                // Note: Ensure your Apps Script doGET() returns { utr: "...", ... }
+                const paymentFound = data.find(row => row.utr.toString().includes(userUTR));
 
                 if (paymentFound) {
                     msg.innerText = "Success! Generating ID...";
                     msg.style.color = "green";
-                    completeRegistration(); // Proceed to generate ID and email
+                    completeRegistration(); 
                 } else {
-                    msg.innerText = "Payment not found yet. If you just paid, wait 1 min and try again.";
+                    msg.innerText = "Payment not found yet. Please wait 1 min and try again.";
                     msg.style.color = "red";
                 }
             } catch (error) {
                 console.error(error);
-                msg.innerText = "Error connecting to server.";
+                msg.innerText = "Error connecting to server. Check URL.";
                 msg.style.color = "red";
             }
         }
@@ -144,14 +208,64 @@
             const matchID = Math.random().toString(16).slice(2, 8).toUpperCase();
             document.getElementById('match-id-display').innerText = matchID;
             
-            // Send Email
-            emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
-                to_email: document.getElementById('input-email').value,
-                match_id: matchID,
-                app_name: "Fest-Mate"
-            }).then(() => {
-                nav('view-success');
-            });
+            // Queue Logic (Local for demo)
+            let maleCount = parseInt(localStorage.getItem('cnt_male') || 0);
+            let femaleCount = parseInt(localStorage.getItem('cnt_female') || 0);
+            const gender = document.getElementById('input-gender').value;
+            let myQueueNum = 0;
+
+            if(gender === 'male') {
+                maleCount++;
+                localStorage.setItem('cnt_male', maleCount);
+                myQueueNum = maleCount;
+            } else {
+                femaleCount++;
+                localStorage.setItem('cnt_female', femaleCount);
+                myQueueNum = femaleCount;
+            }
+
+            const user = {
+                id: matchID, 
+                queueNum: myQueueNum, 
+                gender: gender 
+            };
+            localStorage.setItem('user_' + matchID, JSON.stringify(user));
+
+            // No EmailJS here, just show success screen
+            nav('view-success');
+        }
+
+        function checkStatus() {
+            const id = document.getElementById('input-check-id').value.trim().toUpperCase();
+            const resultBox = document.getElementById('status-result');
+            const statusText = document.getElementById('status-text');
+            const waBtn = document.getElementById('btn-whatsapp');
+            
+            resultBox.classList.remove('hidden');
+            const user = JSON.parse(localStorage.getItem('user_' + id));
+
+            if (!user) {
+                statusText.innerText = "❌ ID Not Found";
+                statusText.style.color = "red";
+                waBtn.classList.add('hidden');
+                return;
+            }
+
+            let totalMales = parseInt(localStorage.getItem('cnt_male') || 0);
+            let totalFemales = parseInt(localStorage.getItem('cnt_female') || 0);
+            let oppositeCount = (user.gender === 'male') ? totalFemales : totalMales;
+            let position = user.queueNum - oppositeCount;
+
+            if (position <= 0) {
+                statusText.innerText = "✅ You have a Match!";
+                statusText.style.color = "#25D366";
+                waBtn.classList.remove('hidden');
+                waBtn.onclick = () => window.open("https://wa.me/919999999999?text=Hi! We matched on Fest-Mate.", "_blank");
+            } else {
+                statusText.innerText = `⏳ Waiting... Position #${position}`;
+                statusText.style.color = "#E65C7B";
+                waBtn.classList.add('hidden');
+            }
         }
     </script>
 </body>
