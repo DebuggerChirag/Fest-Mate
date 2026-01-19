@@ -3,319 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moodi-Mate</title>
-    
+    <title>Fest-Mate</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha512/0.8.0/sha512.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <style>
-        /* --- DESIGN SYSTEM --- */
-        :root {
-            --bg-color: #FFF9F5;
-            --primary-gradient: linear-gradient(135deg, #a5cf3f 0%, #7dbb00 100%); 
-            --btn-gradient: linear-gradient(90deg, #9bc53d 0%, #7dbb00 100%);
-            --text-dark: #2D3748;
-            --text-gray: #718096;
-            --input-border: #E2E8F0;
-            --error-red: #E53E3E;
-        }
-
-        body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-dark); min-height: 100vh; display: flex; justify-content: center; align-items: center; overflow-x: hidden; }
-        .glow-bg { position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(165, 207, 63, 0.2) 0%, rgba(255,255,255,0) 70%); top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: -1; pointer-events: none; }
-        .container { width: 100%; max-width: 440px; padding: 24px; text-align: center; animation: fadeIn 0.6s ease-out; }
+        /* [KEEP YOUR PREVIOUS CSS STYLES HERE] */
+        :root { --bg-color: #FFF9F5; --text-dark: #2D3748; --input-border: #E2E8F0; }
+        body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-dark); min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+        .container { width: 100%; max-width: 440px; padding: 24px; text-align: center; }
         .hidden { display: none !important; }
-        .btn-link { background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.9rem; margin-top: 20px; text-decoration: underline; }
-        h1 { font-family: 'Playfair Display', serif; font-size: 3rem; margin: 0 0 10px; background: linear-gradient(90deg, #E65C7B, #F98C6D); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; }
-        .subtitle { color: var(--text-gray); margin-bottom: 30px; line-height: 1.5; }
-        .card { background: white; padding: 32px; border-radius: 24px; box-shadow: 0 20px 40px -10px rgba(165, 207, 63, 0.15); text-align: left; }
-        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-dark); }
-        input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--input-border); font-size: 1rem; box-sizing: border-box; outline: none; transition: 0.2s; background: #FAFAFA; }
-        input:focus { border-color: #9bc53d; background: white; }
-        .btn-primary { width: 100%; padding: 16px; border-radius: 18px; border: none; background: var(--btn-gradient); color: white; font-size: 1rem; font-weight: 600; cursor: pointer; box-shadow: 0 10px 20px -5px rgba(165, 207, 63, 0.4); transition: transform 0.2s; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-primary:hover { transform: translateY(-3px); }
-        .btn-secondary { width: 100%; padding: 16px; border-radius: 18px; border: 1px solid #E2E8F0; background: white; color: var(--text-gray); font-weight: 600; cursor: pointer; margin-top: 15px; }
+        .card { background: white; padding: 32px; border-radius: 24px; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1); text-align: left; }
+        .btn-primary { width: 100%; padding: 16px; border-radius: 18px; border: none; background: linear-gradient(90deg, #F687B3, #F6AD55); color: white; font-weight: 600; cursor: pointer; margin-top: 20px; }
+        .btn-secondary { width: 100%; padding: 16px; border-radius: 18px; border: 1px solid #E2E8F0; background: white; color: #718096; font-weight: 600; cursor: pointer; margin-top: 15px; }
+        input, select { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--input-border); margin-bottom: 15px; box-sizing: border-box; }
+        .qr-placeholder { background: #f0f0f0; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
         
-        /* Gender & Priority */
-        .gender-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 5px; }
-        .gender-card { border: 1px solid var(--input-border); border-radius: 16px; padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .gender-card.selected { border-color: #9bc53d; background: #f4f9e6; color: #557d0e; font-weight: 600; }
-        .emoji { font-size: 1.5rem; display: block; margin-bottom: 5px; }
-        .priority-box { border: 2px dashed #cadd95; background: #f9fbf2; padding: 15px; border-radius: 16px; margin-top: 20px; display: flex; gap: 12px; align-items: center; }
-        .priority-content h4 { margin: 0; color: #557d0e; font-size: 0.9rem; }
-        .priority-content p { margin: 2px 0 0; color: #718096; font-size: 0.8rem; }
-        input[type="checkbox"] { accent-color: #9bc53d; width: 18px; height: 18px; }
-
-        /* Waitlist & Icons */
+        /* Icons */
+        .main-icon-box { width: 80px; height: 80px; background: linear-gradient(135deg, #FF8FAB, #FFC2D1); border-radius: 24px; margin: 0 auto 24px; display: flex; justify-content: center; align-items: center; box-shadow: 0 15px 30px -10px rgba(255, 143, 171, 0.6); }
         .waitlist-icon { width: 70px; height: 70px; background: #FFF0F0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
-        .queue-num { font-size: 1.2rem; color: #E65C7B; font-weight: 700; margin: 10px 0; }
-        .id-display-box { background: #F7FAFC; padding: 20px; border-radius: 16px; margin-top: 20px; text-align: center; border: 1px solid #EDF2F7; }
-        .match-id-text { font-family: monospace; font-size: 1.8rem; font-weight: bold; letter-spacing: 2px; color: #2D3748; }
-        .main-icon-box { width: 80px; height: 80px; background: linear-gradient(135deg, #FF8FAB, #FFC2D1); border-radius: 24px; margin: 0 auto 24px; display: flex; justify-content: center; align-items: center; box-shadow: 0 15px 30px -10px rgba(255, 143, 171, 0.6); position: relative; }
-        .tags { display: flex; justify-content: center; gap: 8px; margin-bottom: 30px; }
-        .tag { background: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; color: #718096; border: 1px solid #EDF2F7; }
-
-        /* Failure Icon */
-        .fail-icon { background: #FFF5F5; color: #C53030; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div class="glow-bg"></div>
-
     <div id="view-home" class="container">
         <div class="main-icon-box">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
         </div>
-        <h1>Moodi-Mate</h1>
-        <p class="subtitle">Matchmaking, simplified. No profiles, no<br>photos — just vibes.</p>
-        <div class="tags">
-            <span class="tag">Queue-based</span>
-            <span class="tag">WhatsApp Connect</span>
-            <span class="tag">No Profiles</span>
-        </div>
+        <h1 style="font-family:'Playfair Display'; font-size:3rem; margin-bottom:10px; color:#E65C7B;">Fest-Mate</h1>
+        <p style="color:#718096; line-height:1.5;">Matchmaking, simplified. No profiles, no<br>photos — just vibes.</p>
         <button class="btn-primary" onclick="nav('view-form')">Get Started</button>
-        <button class="btn-secondary" onclick="nav('view-status')">I Have a Match ID</button>
     </div>
 
     <div id="view-form" class="container hidden">
         <div class="card">
-            <h2 style="margin-top:0; font-family:'Playfair Display';">Find your match</h2>
-            <label>Mobile Number</label>
-            <input type="tel" id="input-mobile" placeholder="Enter your mobile number">
+            <h2 style="margin-top:0;">Find your match</h2>
+            <input type="tel" id="input-mobile" placeholder="Mobile Number">
+            <input type="email" id="input-email" placeholder="Email Address">
+            <select id="input-gender">
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+            <button class="btn-primary" onclick="showQR()">Pay ₹20 & Join</button>
+            <center><button class="btn-secondary" onclick="nav('view-home')">Cancel</button></center>
+        </div>
+    </div>
 
-            <label style="margin-top:20px;">Gender</label>
-            <div class="gender-grid">
-                <div class="gender-card" id="opt-male" onclick="selectGender('male')"><span class="emoji">👨</span> Male</div>
-                <div class="gender-card" id="opt-female" onclick="selectGender('female')"><span class="emoji">👩</span> Female</div>
+    <div id="view-qr" class="container hidden">
+        <div class="card">
+            <h2 style="text-align:center; margin-top:0;">Scan to Pay</h2>
+            <div class="qr-placeholder">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=YOUR_UPI@okaxis&pn=FestMate&am=20" width="150">
+                <p style="margin-bottom:0; color:#666;">Scan with GPay / PhonePe</p>
             </div>
+            
+            <p style="font-size:0.9rem; color:#666;">After paying, enter the <b>UTR / Transaction ID</b> below (found in your payment app).</p>
+            <input type="text" id="input-utr" placeholder="Enter UTR (e.g. 4312xxxx)">
+            
+            <button class="btn-primary" onclick="verifyPaymentRealtime()">Verify Payment</button>
+            <p id="verify-msg" style="text-align:center; font-size:0.9rem; margin-top:10px; min-height:20px;"></p>
+            <center><button class="btn-secondary" onclick="nav('view-form')">Back</button></center>
+        </div>
+    </div>
 
-            <div class="priority-box">
-                <input type="checkbox" id="input-priority">
-                <div class="priority-content">
-                    <h4>I have Priority Access</h4>
-                    <p>Admin approval required</p>
-                </div>
-            </div>
-
-            <label style="margin-top:20px;">Coupon Code (Optional)</label>
-            <input type="text" id="input-coupon" placeholder="Have a code?">
-
-            <button class="btn-primary" onclick="launchPayU()">Pay with PayU (₹20)</button>
-            <center><button class="btn-link" onclick="nav('view-home')">Cancel</button></center>
+    <div id="view-success" class="container hidden">
+        <h1 style="color:#25D366; margin-bottom:10px;">Payment Verified!</h1>
+        <div class="card" style="text-align:center;">
+            <div class="waitlist-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#E65C7B" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+            <p style="color:#718096; margin-bottom:5px;">Your Match ID</p>
+            <h2 id="match-id-display" style="font-family:monospace; font-size:2rem; margin:0; color:#2D3748;">...</h2>
+            <p style="color:#E65C7B; font-size:0.9rem; margin-top:10px;">We have emailed this ID to you.</p>
+            <button class="btn-secondary" onclick="nav('view-home')">Back to Home</button>
         </div>
     </div>
 
     <div id="view-loading" class="container hidden">
-        <div class="main-icon-box" style="background: linear-gradient(135deg, #a5cf3f, #7dbb00); box-shadow:none;">
-            <svg class="spin" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
-        </div>
-        <h2>Verifying Payment...</h2>
-        <p class="subtitle">Please wait while we secure your spot.</p>
+        <h2>Verifying...</h2>
+        <p>Checking bank records. This may take 30s.</p>
     </div>
-
-    <div id="view-waitlist" class="container hidden">
-        <h1 style="font-size: 2.2rem;">Moodi-Mate</h1>
-        <div class="waitlist-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#E65C7B" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
-        <h2 style="font-family:'Playfair Display'; margin:0;">In the Waitlist</h2>
-        <div id="dynamic-status" class="queue-num">Your position: #Calculating...</div>
-        <p id="dynamic-msg" style="font-size:0.85rem; color:var(--text-gray);">Waiting for signups.</p>
-        <div class="id-display-box">
-            <p style="margin:0; font-size:0.8rem; color:#A0AEC0;">YOUR MATCH ID</p>
-            <div style="margin-top:5px;"><span id="generated-id" class="match-id-text">...</span></div>
-            <p style="margin:8px 0 0 0; font-size:0.8rem; color:#E65C7B;">Save this ID!</p>
-        </div>
-        <button class="btn-secondary" onclick="nav('view-home')">Back to Home</button>
-    </div>
-
-    <div id="view-failure" class="container hidden">
-        <div class="waitlist-icon fail-icon">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C53030" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </div>
-        <h2 style="color: #C53030;">Transaction Failed</h2>
-        <p class="subtitle">We couldn't process your payment. Please try again.</p>
-        <button class="btn-primary" style="background: #C53030;" onclick="nav('view-form')">Try Again</button>
-        <center><button class="btn-link" onclick="nav('view-home')">Back to Home</button></center>
-    </div>
-
-    <div id="view-status" class="container hidden">
-        <div class="card">
-            <h2>Check Status</h2>
-            <input type="text" id="input-check-id" placeholder="Enter Match ID" style="text-align:center; font-weight:bold;">
-            <button class="btn-primary" onclick="checkStatus()">Check Status</button>
-            <div id="status-result" class="hidden" style="margin-top:25px; padding-top:20px; border-top:1px solid #eee;">
-                <p id="status-text" style="font-weight:600;">Loading...</p>
-                <button id="btn-whatsapp" class="btn-primary hidden" style="background: #25D366;">Connect on WhatsApp 💬</button>
-            </div>
-            <center><button class="btn-link" onclick="nav('view-home')">Back</button></center>
-        </div>
-    </div>
-
-    <form action="https://test.payu.in/_payment" method="post" id="payu-form" style="display: none;">
-        <input type="hidden" name="key" value="gtKFFx" />
-        <input type="hidden" name="txnid" id="txnid" />
-        <input type="hidden" name="productinfo" value="MoodiMate Match" />
-        <input type="hidden" name="amount" id="payu-amount" value="20" />
-        <input type="hidden" name="email" value="test@example.com" />
-        <input type="hidden" name="firstname" value="Moodi User" />
-        <input type="hidden" name="phone" value="9999999999" />
-        <input type="hidden" name="surl" id="surl" />
-        <input type="hidden" name="furl" id="furl" />
-        <input type="hidden" name="hash" id="hash" />
-    </form>
 
     <script>
-        // --- PAYU CONFIG ---
-        const PAYU_KEY = "IuQ6Hb";
-        // UPDATED SALT FROM ERROR SCREEN
-        const PAYU_SALT = "fqdroMJYe26v18F1neoweitUhfZVK0Bp"; 
+        // --- CONFIG ---
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwMMgs3DBWEy4O5QBHLWzsgFMJ2xSbMkSuVUR8Cp9d9DSlaX9Q2zB4IMl0FUS4ijt79/exec"; 
+        const EMAILJS_SERVICE = "YOUR_SERVICE_ID";
+        const EMAILJS_TEMPLATE = "YOUR_TEMPLATE_ID";
+        const EMAILJS_KEY = "YOUR_PUBLIC_KEY";
 
-        let selectedGender = null;
+        (function() { emailjs.init(EMAILJS_KEY); })();
 
-        // --- HANDLE SUCCESS / FAILURE ON RELOAD ---
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const status = urlParams.get('status');
-
-            if (status === 'success') {
-                nav('view-loading'); // Show loading briefly
-                const pendingData = JSON.parse(localStorage.getItem('pending_signup'));
-                
-                setTimeout(() => {
-                    if(pendingData) {
-                        addToQueue(pendingData.mobile, pendingData.gender);
-                        localStorage.removeItem('pending_signup'); 
-                    } else {
-                        nav('view-status'); 
-                    }
-                }, 1500); // Fake delay for UX
-            } 
-            else if (status === 'failed') {
-                nav('view-failure'); // Show Red Failure Screen
-            }
-        };
-
-        function nav(viewId) {
+        function nav(id) {
             document.querySelectorAll('.container').forEach(el => el.classList.add('hidden'));
-            document.getElementById(viewId).classList.remove('hidden');
+            document.getElementById(id).classList.remove('hidden');
         }
 
-        function selectGender(gender) {
-            selectedGender = gender;
-            document.querySelectorAll('.gender-card').forEach(el => el.classList.remove('selected'));
-            document.getElementById('opt-' + gender).classList.add('selected');
+        function showQR() {
+            if(!document.getElementById('input-mobile').value) return alert("Enter details");
+            nav('view-qr');
         }
 
-        function launchPayU() {
-            const mobile = document.getElementById('input-mobile').value;
-            const coupon = document.getElementById('input-coupon').value.trim().toUpperCase();
-
-            if(!mobile || !selectedGender) return alert("Please fill details.");
-
-            localStorage.setItem('pending_signup', JSON.stringify({mobile, gender: selectedGender}));
-
-            const txnid = "TXN" + Math.floor(Math.random() * 10000000);
-            const amount = (coupon === "FREE") ? "1.00" : "20.00"; 
+        async function verifyPaymentRealtime() {
+            const userUTR = document.getElementById('input-utr').value.trim();
+            const msg = document.getElementById('verify-msg');
             
-            const currentUrl = window.location.href.split('?')[0];
-            const surl = currentUrl + "?status=success";
-            const furl = currentUrl + "?status=failed";
+            if(userUTR.length < 4) return alert("Enter valid UTR");
 
-            // Hash Generation
-            const hashString = `${PAYU_KEY}|${txnid}|${amount}|MoodiMate Match|Moodi User|test@example.com|||||||||||${PAYU_SALT}`;
-            const hash = sha512(hashString);
-
-            document.getElementById('txnid').value = txnid;
-            document.getElementById('payu-amount').value = amount;
-            document.getElementById('hash').value = hash;
-            document.getElementById('surl').value = surl;
-            document.getElementById('furl').value = furl;
-
-            document.getElementById('payu-form').submit();
-        }
-
-        function addToQueue(mobile, gender) {
-            const matchID = Math.random().toString(16).slice(2, 8).toUpperCase(); 
-            let maleCount = parseInt(localStorage.getItem('cnt_male') || 0);
-            let femaleCount = parseInt(localStorage.getItem('cnt_female') || 0);
-
-            let myQueueNum = 0;
-            if(gender === 'male') {
-                maleCount++;
-                localStorage.setItem('cnt_male', maleCount);
-                myQueueNum = maleCount;
-            } else {
-                femaleCount++;
-                localStorage.setItem('cnt_female', femaleCount);
-                myQueueNum = femaleCount;
-            }
-
-            const user = {
-                id: matchID, mobile: mobile, gender: gender,
-                queueNum: myQueueNum,
-                timestamp: new Date().toISOString()
-            };
-            localStorage.setItem('user_' + matchID, JSON.stringify(user));
-
-            nav('view-waitlist');
-            document.getElementById('generated-id').innerText = matchID;
-            updateWaitlistUI(user, maleCount, femaleCount);
-        }
-
-        function updateWaitlistUI(user, totalMales, totalFemales) {
-            let oppositeCount = (user.gender === 'male') ? totalFemales : totalMales;
-            let position = user.queueNum - oppositeCount;
-            let neededGender = (user.gender === 'male') ? "female" : "male";
-
-            const statusEl = document.getElementById('dynamic-status');
-            const msgEl = document.getElementById('dynamic-msg');
-
-            if (position <= 0) {
-                statusEl.innerText = "Status: MATCHED! 🎉";
-                statusEl.style.color = "#25D366";
-                msgEl.innerText = "Your match is ready. Check Status.";
-            } else {
-                statusEl.innerText = `Your position: #${position}`;
-                statusEl.style.color = "#E65C7B";
-                msgEl.innerText = `Waiting for ${position} ${neededGender} signups.`;
-            }
-        }
-
-        function checkStatus() {
-            const id = document.getElementById('input-check-id').value.trim().toUpperCase();
-            const resultBox = document.getElementById('status-result');
-            const statusText = document.getElementById('status-text');
-            const waBtn = document.getElementById('btn-whatsapp');
+            msg.innerText = "Checking bank records...";
+            msg.style.color = "blue";
             
-            resultBox.classList.remove('hidden');
-            const user = JSON.parse(localStorage.getItem('user_' + id));
+            // Show full loading screen if preferred, or just text
+            // nav('view-loading'); 
 
-            if (!user) {
-                statusText.innerText = "❌ ID Not Found";
-                statusText.style.color = "red";
-                waBtn.classList.add('hidden');
-                return;
+            try {
+                // 1. Fetch data from your Google Sheet
+                const response = await fetch(GOOGLE_SCRIPT_URL);
+                const data = await response.json();
+
+                // 2. Check if UTR exists
+                const paymentFound = data.find(row => row.utr.includes(userUTR));
+
+                if (paymentFound) {
+                    msg.innerText = "Success! Generating ID...";
+                    msg.style.color = "green";
+                    completeRegistration(); // Proceed to generate ID and email
+                } else {
+                    msg.innerText = "Payment not found yet. If you just paid, wait 1 min and try again.";
+                    msg.style.color = "red";
+                }
+            } catch (error) {
+                console.error(error);
+                msg.innerText = "Error connecting to server.";
+                msg.style.color = "red";
             }
+        }
 
-            let totalMales = parseInt(localStorage.getItem('cnt_male') || 0);
-            let totalFemales = parseInt(localStorage.getItem('cnt_female') || 0);
-            let oppositeCount = (user.gender === 'male') ? totalFemales : totalMales;
-            let position = user.queueNum - oppositeCount;
-
-            if (position <= 0) {
-                statusText.innerText = "✅ You have a Match!";
-                statusText.style.color = "#25D366";
-                waBtn.classList.remove('hidden');
-                waBtn.onclick = () => window.open("https://wa.me/919999999999?text=Hi! We matched on Moodi-Mate.", "_blank");
-            } else {
-                statusText.innerText = `⏳ Waiting... Position #${position}`;
-                statusText.style.color = "#E65C7B";
-                waBtn.classList.add('hidden');
-            }
+        function completeRegistration() {
+            const matchID = Math.random().toString(16).slice(2, 8).toUpperCase();
+            document.getElementById('match-id-display').innerText = matchID;
+            
+            // Send Email
+            emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+                to_email: document.getElementById('input-email').value,
+                match_id: matchID,
+                app_name: "Fest-Mate"
+            }).then(() => {
+                nav('view-success');
+            });
         }
     </script>
 </body>
