@@ -22,35 +22,26 @@
 
         body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-dark); min-height: 100vh; display: flex; justify-content: center; align-items: center; overflow-x: hidden; }
         
-        /* Glow Background */
         .glow-bg { position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(255,182,193,0.4) 0%, rgba(255,255,255,0) 70%); top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: -1; pointer-events: none; }
         
-        /* Container */
         .container { width: 100%; max-width: 440px; padding: 24px; text-align: center; animation: fadeIn 0.6s ease-out; }
         .hidden { display: none !important; }
         
-        /* Typography */
         h1 { font-family: 'Playfair Display', serif; font-size: 3rem; margin: 0 0 10px; background: linear-gradient(90deg, #E65C7B, #F98C6D); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; }
         .subtitle { color: var(--text-gray); margin-bottom: 30px; line-height: 1.5; }
         
-        /* Cards & Forms */
         .card { background: white; padding: 32px; border-radius: 24px; box-shadow: 0 20px 40px -10px rgba(255, 154, 158, 0.15); text-align: left; }
         label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-dark); }
         input, select { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--input-border); font-size: 1rem; box-sizing: border-box; outline: none; transition: 0.2s; background: #FAFAFA; margin-bottom: 15px; }
         input:focus { border-color: #F687B3; background: white; }
         
-        /* Buttons */
         .btn-primary { width: 100%; padding: 16px; border-radius: 18px; border: none; background: var(--btn-gradient); color: white; font-size: 1rem; font-weight: 600; cursor: pointer; box-shadow: 0 10px 20px -5px rgba(246, 135, 179, 0.4); transition: transform 0.2s; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-primary:hover { transform: translateY(-3px); }
         .btn-secondary { width: 100%; padding: 16px; border-radius: 18px; border: 1px solid #E2E8F0; background: white; color: var(--text-gray); font-weight: 600; cursor: pointer; margin-top: 15px; }
         .btn-link { background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.9rem; margin-top: 20px; text-decoration: underline; }
 
-        /* QR Section */
         .qr-placeholder { background: #f0f0f0; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
-
-        /* Waitlist & Icons */
         .waitlist-icon { width: 70px; height: 70px; background: #FFF0F0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
-        .id-display-box { background: #F7FAFC; padding: 20px; border-radius: 16px; margin-top: 20px; text-align: center; border: 1px solid #EDF2F7; }
         .match-id-text { font-family: monospace; font-size: 1.8rem; font-weight: bold; letter-spacing: 2px; color: #2D3748; }
         .main-icon-box { width: 80px; height: 80px; background: linear-gradient(135deg, #FF8FAB, #FFC2D1); border-radius: 24px; margin: 0 auto 24px; display: flex; justify-content: center; align-items: center; box-shadow: 0 15px 30px -10px rgba(255, 143, 171, 0.6); position: relative; }
         .tags { display: flex; justify-content: center; gap: 8px; margin-bottom: 30px; }
@@ -96,9 +87,9 @@
             </select>
 
             <label>Coupon Code (Optional)</label>
-            <input type="text" id="input-coupon" placeholder="Have a code?">
+            <input type="text" id="input-coupon" placeholder="Have a code? (Try FREE)">
 
-            <button class="btn-primary" onclick="showQR()">Pay ₹20 & Join</button>
+            <button class="btn-primary" onclick="showQR()">Proceed to Pay</button>
             <center><button class="btn-link" onclick="nav('view-home')">Cancel</button></center>
         </div>
     </div>
@@ -106,12 +97,17 @@
     <div id="view-qr" class="container hidden">
         <div class="card">
             <h2 style="text-align:center; margin-top:0;">Scan to Pay</h2>
+            
+            <p id="amount-display" style="text-align:center; font-weight:bold; color:#E65C7B; font-size:1.2rem; margin:0 0 15px 0;">
+                Amount: ₹20
+            </p>
+
             <div class="qr-placeholder">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=vrajshah17082006@okhdfcbank&pn=FestMate&am=20" width="150">
+                <img id="dynamic-qr" src="" width="150">
                 <p style="margin-bottom:0; color:#666;">Scan with any UPI App</p>
             </div>
             
-            <p style="font-size:0.9rem; color:#666;">After paying, enter the <b>UTR / Transaction ID</b> below (found in your payment app).</p>
+            <p style="font-size:0.9rem; color:#666;">After paying, enter the <b>UTR / Transaction ID</b> below.</p>
             <input type="text" id="input-utr" placeholder="Enter UTR (e.g. 4312xxxx)">
             
             <button class="btn-primary" onclick="verifyPaymentRealtime()">Verify Payment</button>
@@ -153,8 +149,6 @@
     </div>
 
     <script>
-        // --- CONFIGURATION ---
-        // 1. PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzx2VjdbYbBK6p-y42-ta8xCSvlssjKNMrnlGRUMQDulm26k7tNWmCpiQtgwqCMwwN9/exec"; 
         
         function nav(id) {
@@ -162,12 +156,34 @@
             document.getElementById(id).classList.remove('hidden');
         }
 
+        // --- UPDATED QR GENERATION LOGIC ---
         function showQR() {
             const mobile = document.getElementById('input-mobile').value;
             const email = document.getElementById('input-email').value;
             const gender = document.getElementById('input-gender').value;
+            // Get the coupon code and convert to uppercase to handle 'free', 'Free', 'FREE'
+            const coupon = document.getElementById('input-coupon').value.trim().toUpperCase();
 
             if(!mobile || !email || !gender) return alert("Please fill all details");
+
+            // DEFAULT AMOUNT IS 20
+            let amount = 20;
+
+            // IF COUPON IS FREE, AMOUNT BECOMES 1
+            if(coupon === "FREE") {
+                amount = 1;
+            }
+
+            // Generate UPI Link with Dynamic Amount (am=${amount})
+            const upiLink = `upi://pay?pa=vrajshah17082006@okhdfcbank&pn=FestMate&am=${amount}`;
+            
+            // Generate QR Image URL
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(upiLink)}`;
+
+            // Update HTML Elements
+            document.getElementById('dynamic-qr').src = qrUrl;
+            document.getElementById('amount-display').innerText = `Amount to Pay: ₹${amount}`;
+
             nav('view-qr');
         }
 
@@ -181,12 +197,9 @@
             msg.style.color = "blue";
 
             try {
-                // 1. Fetch data from your Google Sheet
                 const response = await fetch(GOOGLE_SCRIPT_URL);
                 const data = await response.json();
 
-                // 2. Check if UTR exists
-                // Note: Ensure your Apps Script doGET() returns { utr: "...", ... }
                 const paymentFound = data.find(row => row.utr.toString().includes(userUTR));
 
                 if (paymentFound) {
@@ -208,7 +221,6 @@
             const matchID = Math.random().toString(16).slice(2, 8).toUpperCase();
             document.getElementById('match-id-display').innerText = matchID;
             
-            // Queue Logic (Local for demo)
             let maleCount = parseInt(localStorage.getItem('cnt_male') || 0);
             let femaleCount = parseInt(localStorage.getItem('cnt_female') || 0);
             const gender = document.getElementById('input-gender').value;
@@ -231,7 +243,6 @@
             };
             localStorage.setItem('user_' + matchID, JSON.stringify(user));
 
-            // No EmailJS here, just show success screen
             nav('view-success');
         }
 
